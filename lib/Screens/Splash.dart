@@ -26,7 +26,7 @@ class SpashView extends StatelessWidget {
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(30),
               ),
-              color: Colors.grey,
+              color: Color.fromRGBO(231,179,194, 80),
             ),
              child: const Center(child: Text(" Continue with Email")),
           )
