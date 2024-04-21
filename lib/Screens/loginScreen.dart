@@ -1,40 +1,58 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ui_firebase/Screens/Home.dart';
+import 'package:ui_firebase/Screens/Signup.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<Login> createState() => _LoginState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginState extends State<Login> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+
+  login() async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text
+      );
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeView()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Column(
         children: [
-          Center(
-            child: Container(
-              //padding:const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-              margin: const EdgeInsets.all(60.0),
-              height: 190,
-              width: 500,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0)),
-                  color: Colors.blue[300]),
+          TextField(
+            decoration:const InputDecoration(
+              labelText: 'Email',
             ),
+            obscureText: false,
+            controller: emailController,
           ),
-          Container(
-            padding: const EdgeInsets.only(right: 10),
-            margin: const EdgeInsets.symmetric(horizontal: 10.0),
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                color: Colors.grey[350]),
+          TextField(
+            decoration:const InputDecoration(
+              labelText: 'Password',
+            ),
+            obscureText: false,
+            controller: passwordController,
           ),
+          ElevatedButton(onPressed: (){}, child: const Text("Login")),
+          TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpView()));}, child: const Text("Do not have an Acoount?"))
         ],
       ),
     );
